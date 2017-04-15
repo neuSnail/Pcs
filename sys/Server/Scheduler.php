@@ -32,8 +32,36 @@ class Scheduler
             $task = $this->taskQueue->dequeue();
             $returnVal = $task->run();
             if ($returnVal instanceof SystemCall) {
+                $returnVal($task, $this);
                 continue;
             }
+
+            if ($task->isFinished()) {
+                unset($this->taskMap[$task->getTaskId()]);
+            } else {
+                $this->enqueue($task);
+            }
         }
+    }
+
+    public function killTask($taskId)
+    {
+        if (!isset($this->taskMap[$taskId])) {
+            return false;
+        }
+        unset($this->taskMap[$taskId]);
+
+        foreach ($this->taskQueue as $i => $task) {
+            if ($task->getTaskId() === $taskId) {
+                unset($this->taskQueue[$i]);
+                break;
+            }
+        }
+
+        return true;
+    }
+
+    public function createTask(){
+
     }
 }
