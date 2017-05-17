@@ -4,12 +4,12 @@ trait Singleton
 {
     private static $instance = null;
 
-    public function getInstance()
+    public static function getInstance()
     {
         return self::singleton();
     }
 
-    private function singleton()
+    private static function singleton()
     {
         if (self::$instance === null) {
             self::$instance = new self();

@@ -5,7 +5,7 @@ class RunMode
 {
     private static $default = 'online';
     private static $runMode = '';
-    private static $map = ['online,dev'];
+    private static $map = ['online', 'dev'];
 
     public static function init()
     {
@@ -17,13 +17,16 @@ class RunMode
         $runMode = get_cfg_var('pcs.RUN_MODE');
         if (!in_array($runMode, self::$map)) {
             self::$runMode = self::$default;
+        } else {
+            self::$runMode = $runMode;
         }
     }
 
-    public function getRunMode()
+    public static function getRunMode()
     {
+        if (empty(self::$runMode)) {
+            self::detect();
+        }
         return self::$runMode;
     }
-
-
 }

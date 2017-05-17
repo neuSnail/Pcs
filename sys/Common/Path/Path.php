@@ -1,8 +1,12 @@
 <?php
 namespace Pcs\Common\Path;
+
+use Pcs\Common\RunMode\RunMode;
+
 class Path
 {
-    const CONFIG_PATH = 'resource/config/';
+    const CONFIG_PATH = '/resource/config';
+    const SRC_PATH = '/src';
     private static $rootPath = '';
 
     public static function setRootPath($rootPath)
@@ -21,6 +25,11 @@ class Path
 
     public static function getConfigPath()
     {
-        return self::getRootPath() . self::CONFIG_PATH;
+        return self::getRootPath() . self::CONFIG_PATH . '/' . RunMode::getRunMode();
+    }
+
+    public static function getSrcPath()
+    {
+        return self::getRootPath() . self::SRC_PATH;
     }
 }
