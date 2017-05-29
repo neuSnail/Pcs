@@ -4,8 +4,8 @@ return [
     'port' => '9501',
 
     'swoole_config' => [
-        'worker_num' => 1
+        'worker_num' => 20
     ],
 
-    'time_out' => 10//micro sec
+    'time_out' => 10000//micro sec
 ];

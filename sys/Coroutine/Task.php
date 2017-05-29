@@ -9,6 +9,7 @@ class Task
     private $context;
     private $status;
     private $scheduler;
+    private $sendValue;
 
     public function __construct(\Generator $coroutine, Context $context)
     {
@@ -22,7 +23,10 @@ class Task
     {
         while (true) {
             try {
+                // var_dump($this->sendValue);
+
                 $this->status = $this->scheduler->schedule();
+
                 switch ($this->status) {
                     case TaskStatus::TASK_WAIT:
                         return null;
@@ -32,7 +36,7 @@ class Task
                 }
 
             } catch (\Exception $e) {
-
+                throw new \Exception($e->getMessage());
             }
         }
     }
@@ -63,7 +67,13 @@ class Task
 
     public function send($value)
     {
+        $this->sendValue = $value;
         $ret = $this->coroutine->send($value);
         return $ret;
+    }
+
+    public function getSendVal()
+    {
+        return $this->sendValue;
     }
 }

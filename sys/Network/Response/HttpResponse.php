@@ -28,15 +28,16 @@ class HttpResponse extends Response
     public function send($response)
     {
         if ($response instanceof JsonResponse) {
-
+            return;
         }
 
         if ($response instanceof HtmlResponse) {
-
+            return;
         }
 
         if (is_string($response)) {
             $this->output($response);
+            return;
         }
 
         throw new \Exception("unexpected response type!");

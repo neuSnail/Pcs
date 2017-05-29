@@ -1,8 +1,8 @@
 <?php
 return [
     'default' => [
-        'module' => '',
-        'controller' => '',
-        'action' => ''
+        'module' => 'api',
+        'controller' => 'test',
+        'action' => 'action'
     ]
 ];

@@ -14,7 +14,8 @@ class Path
         self::$rootPath = $rootPath;
     }
 
-    private static function getRootPath()
+
+    public static function getRootPath()
     {
         if (empty(self::$rootPath)) {
             throw new \Exception('未设置rootPath');
