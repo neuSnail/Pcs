@@ -4,31 +4,21 @@ namespace Pcs\Network\Request;
 use Pcs\Common\Security\Security;
 use Pcs\Frame\Controller;
 
-class HttpRequest extends Request
+class HttpRequest implements Request
 {
     private $swooleHttpRequest;
-    private $module;
-    private $controller;
-    private $action;
+    private $module = null;
 
     public function __construct(\swoole_http_request $request)
     {
         $this->swooleHttpRequest = $request;
     }
 
-    public function parse()
-    {
-        $server = $this->swooleHttpRequest->server;
-        $requestArr = explode('/', $server['request_uri']);
-        $this->module = $requestArr[0];
-        $this->controller = $requestArr[1];
-        $this->action = $requestArr[2];
-        //var_dump($requestArr);
-    }
 
     public function post($key = null)
     {
         $post = $this->swooleHttpRequest->post;
+        if (empty($post)) return null;
         array_walk_recursive($post, [$this, 'xssFilter']);
         if (null === $key) {
             return $post;
@@ -44,6 +34,7 @@ class HttpRequest extends Request
     public function get($key = null)
     {
         $get = $this->swooleHttpRequest->get;
+        if (empty($get)) return null;
         array_walk_recursive($get, [$this, 'xssFilter']);
         if (null === $key) {
             return $get;
@@ -72,4 +63,16 @@ class HttpRequest extends Request
     {
         return $this->swooleHttpRequest->server;
     }
+
+    public function setModule($module)
+    {
+        $this->module = $module;
+    }
+
+    public function getModule()
+    {
+        return $this->module;
+    }
+
+
 }

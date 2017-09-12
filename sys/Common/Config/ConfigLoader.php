@@ -9,14 +9,13 @@ class ConfigLoader
 {
     use Singleton;
 
-    public function load()
+    public function load($path)
     {
         $configMap = array();
-        $configPath = Path::getConfigPath();
-        $configs = scandir($configPath);
+        $configs = scandir($path);
         $configs = File::fileTypeFilter('php', $configs);
         foreach ($configs as $config) {
-            $ret = require $configPath . '/' . $config;
+            $ret = require $path . '/' . $config;
             if (!is_array($ret)) {
                 throw new \Exception('config format error');
             }

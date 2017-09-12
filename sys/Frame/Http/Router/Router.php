@@ -55,7 +55,7 @@ class Router
 
     private function setDefault()
     {
-        $default = Config::get('route.default');
+        $default = Config::get('config.default_route');
         $this->module = $default['module'];
         $this->controller = $default['controller'];
         $this->action = $default['action'];

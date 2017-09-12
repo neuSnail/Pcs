@@ -6,6 +6,7 @@ use Pcs\Common\RunMode\RunMode;
 class Path
 {
     const CONFIG_PATH = '/resource/config';
+    const SQL_PATH = '/resource/sqlMap';
     const SRC_PATH = '/src';
     private static $rootPath = '';
 
@@ -32,5 +33,10 @@ class Path
     public static function getSrcPath()
     {
         return self::getRootPath() . self::SRC_PATH;
+    }
+
+    public static function getSqlPath()
+    {
+        return self::getRootPath() . self::SQL_PATH;
     }
 }

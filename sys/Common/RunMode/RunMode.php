@@ -5,7 +5,7 @@ class RunMode
 {
     private static $default = 'online';
     private static $runMode = '';
-    private static $map = ['online', 'dev'];
+    private static $map = ['online', 'dev','qa'];
 
     public static function init()
     {

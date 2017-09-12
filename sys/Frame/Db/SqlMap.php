@@ -1,23 +1,29 @@
 <?php
-namespace Pcs\Common\Config;
+namespace Pcs\Frame\Db;
 
+use Pcs\Common\Config\ConfigLoader;
 use Pcs\Common\Path\Path;
 
-class Config
+class SqlMap
 {
-    private static $configMap = [];
+    private static $map = [];
 
     public static function init()
     {
-        $configLoader = ConfigLoader::getInstance();
-        $configPath = Path::getConfigPath();
-        self::$configMap = $configLoader->load($configPath);
+        self::readMap();
     }
 
-    public static function get($key, $default = null)
+    private static function readMap()
+    {
+        $mapPath = Path::getSqlPath();
+        $loader = ConfigLoader::getInstance();
+        self::$map = $loader->load($mapPath);
+    }
+
+    public static function getSql($key)
     {
         $targets = explode('.', $key);
-        $configMap = self::$configMap;
+        $configMap = self::$map;
         do {
             if (empty($key)) {
                 break;
@@ -35,13 +41,6 @@ class Config
 
         } while (0);
 
-        return $default;
+        throw new \Exception('sql map ' . $key, ' not found!');
     }
-
-    public static function clear()
-    {
-
-    }
-
-
 }

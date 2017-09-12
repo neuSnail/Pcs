@@ -4,29 +4,38 @@ namespace Pcs\Common\BootStrap;
 use Pcs\Common\Config\Config;
 use Pcs\Common\Path\Path;
 use Pcs\Common\RunMode\RunMode;
+use Pcs\Frame\Db\SqlMap;
 
 class BootStrap
 {
+    private $rootPath;
 
     public function boot($rootPath)
     {
-        $this->PathInit($rootPath);
+        $this->rootPath = $rootPath;
+        $this->PathInit();
         $this->RunModeInit();
         $this->ConfigInit();
+        $this->SqlMapInit();
     }
 
-    public function PathInit($rootPath)
+    private function PathInit()
     {
-        Path::setRootPath($rootPath);
+        Path::setRootPath($this->rootPath);
     }
 
-    public function RunModeInit()
+    private function RunModeInit()
     {
         RunMode::init();
     }
 
-    public function ConfigInit()
+    private function ConfigInit()
     {
         Config::init();
+    }
+
+    private function SqlMapInit()
+    {
+        SqlMap::init();
     }
 }

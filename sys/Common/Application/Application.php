@@ -5,8 +5,14 @@ use Pcs\Server\Http\HttpServer;
 
 class Application
 {
+
     public function startHttpServer(HttpServer $server)
     {
         $server->start();
+    }
+
+    public function startTcpServer($server)
+    {
+
     }
 }

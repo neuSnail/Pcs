@@ -6,5 +6,5 @@ interface Server
 
     public function stop();
 
-    public function reload();
+
 }

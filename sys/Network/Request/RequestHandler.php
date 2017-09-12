@@ -58,6 +58,7 @@ class RequestHandler
         $module = $url['module'];
         $controller = $url['controller'];
         $action = $url['action'];
+        $this->request->setModule($module);
 
         $controller = '\\App\\' . $module . '\\Controller\\' . $controller . 'Controller';
         if (!class_exists($controller)) {

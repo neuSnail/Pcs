@@ -12,11 +12,7 @@ class Scheduler
         $this->task = $task;
         $this->stack = new \SplStack();
     }
-
-    /*
-     * 调度器的调度优先级是先检查返回值是不是系统调用,
-     * 然后查看返回值是不是协程子调用,是的话母协程入栈,子协程交给task进行下一轮调用。
-     */
+    
     public function schedule()
     {
         $coroutine = $this->task->getCoroutine();
@@ -26,6 +22,9 @@ class Scheduler
         if ($status !== self::SCHEDULE_CONTINUE) return $status;
 
         $status = $this->handleStackPush($value);
+        if ($status !== self::SCHEDULE_CONTINUE) return $status;
+
+        $status = $this->handleAsyncJob($value);
         if ($status !== self::SCHEDULE_CONTINUE) return $status;
 
         $status = $this->handelYieldValue($value);
@@ -63,6 +62,29 @@ class Scheduler
         return TaskStatus::TASK_CONTINUE;
     }
 
+    private function handleAsyncJob($value)
+    {
+        if (!is_subclass_of($value, Async::class)) {
+            return self::SCHEDULE_CONTINUE;
+        }
+
+        $value->execute([$this, 'asyncCallback']);
+
+        return TaskStatus::TASK_WAIT;
+    }
+
+    public function asyncCallback($response, $exception = null)
+    {
+        if ($exception !== null
+            && $exception instanceof \Exception
+        ) {
+            $this->throwException($exception, true);
+        } else {
+            $this->task->send($response);
+            $this->task->run();
+        }
+    }
+
     private function handelYieldValue($value)
     {
         if (!$this->task->valid()) {
@@ -87,5 +109,28 @@ class Scheduler
         $this->task->send($value);
 
         return TaskStatus::TASK_CONTINUE;
+    }
+
+    public function throwException($e, $isFirstCall = false)
+    {
+        if ($this->isStackEmpty()) {
+            $this->task->getCoroutine()->throw($e);
+            return;
+        }
+
+        try {
+            if ($isFirstCall) {
+                $coroutine = $this->task->getCoroutine();
+            } else {
+                $coroutine = $this->stack->pop();
+            }
+
+            $this->task->setCoroutine($coroutine);
+            $coroutine->throw($e);
+
+            $this->task->run();
+        } catch (\Exception $e) {
+            $this->throwException($e);
+        }
     }
 }

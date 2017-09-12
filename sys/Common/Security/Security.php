@@ -10,4 +10,10 @@ class Security
         $string = htmlspecialchars($string);
         return $string;
     }
+
+    public static function sqlFilter($sql)
+    {
+        //$sql = trim($sql);
+        return $sql;
+    }
 }

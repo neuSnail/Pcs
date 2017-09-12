@@ -2,10 +2,10 @@
 namespace Pcs\Network\Response;
 
 
-use Pcs\Frame\Response\HtmlResponse;
-use Pcs\Frame\Response\JsonResponse;
+use Pcs\Frame\Http\Response\Response;
+use Pcs\Network\Response\Response as ResponseInterface;
 
-class HttpResponse extends Response
+class HttpResponse implements ResponseInterface
 {
     private $response;
 
@@ -19,26 +19,23 @@ class HttpResponse extends Response
         return $this->response;
     }
 
-    public function output($msg)
+    public function output($content, $headers = null)
     {
-        $this->response->header('charset', 'utf-8');
-        $this->response->end($msg);
+        if ($headers !== null) {
+            foreach ($headers as $header) {
+                $this->response->header(key($header), current($header));
+            }
+        }
+        $this->response->end($content);
     }
 
     public function send($response)
     {
-        if ($response instanceof JsonResponse) {
+        if ($response instanceof Response) {
+            $this->output($response->getContent(), $response->getHeader());
             return;
         }
 
-        if ($response instanceof HtmlResponse) {
-            return;
-        }
-
-        if (is_string($response)) {
-            $this->output($response);
-            return;
-        }
 
         throw new \Exception("unexpected response type!");
     }

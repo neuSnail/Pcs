@@ -1,9 +1,9 @@
 <?php
-namespace Pcs\Frame\Response;
+namespace Pcs\Frame\Http\Response;
 
-class Response
+abstract class Response
 {
-    protected $header;
+    protected $header=[];
     protected $content;
 
     public function getHeader()
