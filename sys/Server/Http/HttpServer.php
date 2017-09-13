@@ -76,13 +76,6 @@ class HttpServer implements Server
 
         $requestHandler = new RequestHandler($request, $response);
         $requestHandler->handle();
-        /* $this->swooleHttpServer->task('select * from user WHERE id=1',
-             -1,
-             function (\swoole_http_server $serv, $task_id, $data) {
-                 $data = unserialize($data);
-                 var_dump($data);
-             });*/
-
     }
 
     public function onTask(\swoole_http_server $serv, $task_id, $from_id, $sql)
